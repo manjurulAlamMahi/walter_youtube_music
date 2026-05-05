@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SparkleClean Pro – Reliable Cleaning Services</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #222;
+    }
+
+    /* NAV */
+    nav {
+      background: #fff;
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 22px; font-weight: 700; color: #1a73e8; }
+    .logo span { color: #34a853; }
+    nav ul { list-style: none; display: flex; gap: 28px; }
+    nav ul li a { text-decoration: none; color: #444; font-size: 14px; }
+    nav ul li a:hover { color: #1a73e8; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+      color: #fff;
+      padding: 70px 40px 60px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 42px; font-weight: 700; margin-bottom: 12px; }
+    .hero p { font-size: 18px; opacity: .88; margin-bottom: 36px; }
+
+    .search-box {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .search-box input {
+      flex: 1;
+      padding: 14px 20px;
+      font-size: 15px;
+      border: none;
+      border-radius: 50px 0 0 50px;
+      outline: none;
+    }
+    .search-box button {
+      padding: 14px 28px;
+      background: #34a853;
+      color: #fff;
+      border: none;
+      border-radius: 0 50px 50px 0;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .search-box button:hover { background: #2e7d32; }
+
+    /* STATS BAR */
+    .stats {
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding: 22px 40px;
+      border-bottom: 1px solid #e8ecf0;
+    }
+    .stat { text-align: center; }
+    .stat strong { display: block; font-size: 22px; color: #1a73e8; }
+    .stat span { font-size: 13px; color: #777; }
+
+    /* SECTION */
+    section { padding: 50px 40px; }
+    section h2 { font-size: 26px; margin-bottom: 28px; color: #1a1a1a; }
+
+    /* DEFAULT SERVICE CARDS */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .service-default {
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    }
+    .service-default .icon { font-size: 40px; margin-bottom: 12px; }
+    .service-default h3 { font-size: 16px; color: #1a1a1a; margin-bottom: 6px; }
+    .service-default p { font-size: 13px; color: #777; }
+
+    /* RESULT CARDS */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 22px;
+    }
+    .result-card {
+      background: #fff;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+      cursor: pointer;
+      transition: transform .18s, box-shadow .18s;
+      position: relative;
+    }
+    .result-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.14);
+    }
+    .result-card.active {
+      outline: 3px solid #1a73e8;
+    }
+    .result-card img {
+      width: 100%;
+      height: 148px;
+      object-fit: cover;
+      display: block;
+    }
+    .result-card .card-body { padding: 14px; }
+    .result-card .badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .result-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 5px;
+      line-height: 1.35;
+    }
+    .result-card p {
+      font-size: 12px;
+      color: #888;
+    }
+    .play-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -80%);
+      width: 44px;
+      height: 44px;
+      background: rgba(0,0,0,.55);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .18s;
+    }
+    .result-card:hover .play-overlay { opacity: 1; }
+    .play-overlay svg { width: 20px; height: 20px; fill: #fff; margin-left: 3px; }
+
+    /* LOADING SPINNER */
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: #888;
+      font-size: 16px;
+    }
+    .spinner {
+      border: 3px solid #e0e0e0;
+      border-top-color: #1a73e8;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin .7s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* HIDDEN IFRAME */
+    /* NOW PLAYING BAR */
+    #now-playing {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(90deg, #1a1a2e, #16213e);
+      color: #fff;
+      padding: 0 20px;
+      height: 90px;
+      display: none;
+      align-items: center;
+      gap: 16px;
+      z-index: 200;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.3);
+    }
+    #now-playing.visible { display: flex; }
+    /* small embedded player inside the bar */
+    #yt-player {
+      width: 160px;
+      height: 70px;
+      border: none;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    #now-playing img {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .np-info { flex: 1; }
+    .np-label { font-size: 10px; color: #90caf9; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; }
+    .np-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; }
+    .np-provider { font-size: 12px; color: #aaa; }
+    .np-pulse {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 20px;
+    }
+    .np-pulse span {
+      display: block;
+      width: 4px;
+      background: #34a853;
+      border-radius: 2px;
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+    .np-pulse span:nth-child(2) { animation-delay: .2s; }
+    .np-pulse span:nth-child(3) { animation-delay: .4s; }
+    .np-pulse span:nth-child(4) { animation-delay: .6s; }
+    @keyframes pulse {
+      from { height: 4px; }
+      to   { height: 18px; }
+    }
+    .np-stop {
+      background: none;
+      border: 1px solid #555;
+      color: #ccc;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .np-stop:hover { background: #333; }
+
+    /* FOOTER */
+    footer {
+      background: #1a1a2e;
+      color: #aaa;
+      text-align: center;
+      padding: 28px;
+      font-size: 13px;
+      margin-bottom: 90px;
+    }
+    footer strong { color: #fff; }
+
+    #results-section { display: none; }
+    #loading-section { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Sparkle<span>Clean</span> Pro</div>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>&#10024; Premium Cleaning Services</h1>
+  <p>Find the perfect cleaning solution for your home or business</p>
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="Search for a service (e.g. deep clean, office, move-out…)" />
+    <button onclick="doSearch()">Find Service</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><strong>12,400+</strong><span>Happy Clients</span></div>
+  <div class="stat"><strong>98%</strong><span>Satisfaction Rate</span></div>
+  <div class="stat"><strong>350+</strong><span>Cleaners Available</span></div>
+  <div class="stat"><strong>24/7</strong><span>Customer Support</span></div>
+</div>
+
+<!-- DEFAULT SERVICES -->
+<section id="default-section">
+  <h2>Our Cleaning Services</h2>
+  <div class="services-grid">
+    <div class="service-default"><div class="icon">&#127968;</div><h3>Home Cleaning</h3><p>Regular &amp; one-time residential cleaning</p></div>
+    <div class="service-default"><div class="icon">&#127970;</div><h3>Office Cleaning</h3><p>Keep your workspace spotless</p></div>
+    <div class="service-default"><div class="icon">&#129529;</div><h3>Deep Cleaning</h3><p>Top-to-bottom intensive clean</p></div>
+    <div class="service-default"><div class="icon">&#129695;</div><h3>Window Washing</h3><p>Crystal-clear inside &amp; out</p></div>
+    <div class="service-default"><div class="icon">&#128715;</div><h3>Upholstery Clean</h3><p>Sofas, chairs &amp; carpets refreshed</p></div>
+    <div class="service-default"><div class="icon">&#128230;</div><h3>Move-Out Clean</h3><p>Leave nothing behind but shine</p></div>
+  </div>
+</section>
+
+<!-- LOADING -->
+<section id="loading-section">
+  <div class="loading">
+    <div class="spinner"></div>
+    Searching available cleaners in your area…
+  </div>
+</section>
+
+<!-- SEARCH RESULTS -->
+<section id="results-section">
+  <h2 id="results-heading">Available Services</h2>
+  <div class="results-grid" id="results-grid"></div>
+</section>
+
+<!-- NOW PLAYING BAR (contains the real player) -->
+<div id="now-playing">
+  <div id="yt-player"></div>
+  <img id="np-thumb" src="" alt="" />
+  <div class="np-info">
+    <div class="np-label">&#129527; Now Playing</div>
+    <div class="np-title" id="np-title">–</div>
+    <div class="np-provider" id="np-provider">–</div>
+  </div>
+  <div class="np-pulse">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <button class="np-stop" onclick="stopPlayer()">&#10005; Stop</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>SparkleClean Pro</strong> &middot; &copy; 2026 &middot; All rights reserved &middot;
+  <a href="#" style="color:#90caf9;">Privacy Policy</a> &middot;
+  <a href="#" style="color:#90caf9;">Terms of Service</a>
+</footer>
+
+<script>
+  const YT_API_KEY = "AIzaSyDw5yrY-ijlU8DNBlGP8LA31VzE_i89FtY";
+
+  const SERVICE_BADGES = [
+    "Home Cleaning", "Office Package", "Deep Clean", "Move-Out",
+    "Window Wash", "Carpet Care", "Sanitize Pro", "Eco Clean",
+    "Premium Plan", "Quick Clean", "Night Shift", "Express Clean"
+  ];
+
+  const SERVICE_SUFFIXES = [
+    "– Professional Package",
+    "– 3h Session",
+    "– 2 Cleaners",
+    "– Same Day Available",
+    "– Eco-Friendly",
+    "– Top Rated"
+  ];
+
+  async function searchYouTube(query) {
+    var url = "https://www.googleapis.com/youtube/v3/search"
+      + "?part=snippet"
+      + "&q=" + encodeURIComponent(query)
+      + "&type=video"
+      + "&videoEmbeddable=true"
+      + "&maxResults=12"
+      + "&key=" + YT_API_KEY;
+    var res = await fetch(url);
+    if (!res.ok) throw new Error("YouTube API error: " + res.status);
+    var data = await res.json();
+    return (data.items || []).map(function(v) {
+      var thumb = v.snippet.thumbnails.medium
+        ? v.snippet.thumbnails.medium.url
+        : (v.snippet.thumbnails.default ? v.snippet.thumbnails.default.url : "");
+      return {
+        id: v.id.videoId,
+        title: v.snippet.title,
+        provider: v.snippet.channelTitle,
+        thumbnail: thumb
+      };
+    });
+  }
+
+  async function doSearch() {
+    var query = document.getElementById("search-input").value.trim();
+    if (!query) return;
+
+    document.getElementById("default-section").style.display = "none";
+    document.getElementById("results-section").style.display = "none";
+    document.getElementById("loading-section").style.display = "block";
+
+    var results;
+    try {
+      results = await searchYouTube(query);
+    } catch (e) {
+      document.getElementById("loading-section").style.display = "none";
+      document.getElementById("default-section").style.display = "block";
+      alert("Service lookup failed: " + e.message);
+      return;
+    }
+
+    document.getElementById("loading-section").style.display = "none";
+
+    if (results.length === 0) {
+      document.getElementById("default-section").style.display = "block";
+      alert("No services found in your area right now. Please try a different search.");
+      return;
+    }
+
+    var grid = document.getElementById("results-grid");
+    grid.innerHTML = "";
+
+    results.forEach(function(r, i) {
+      var badge = SERVICE_BADGES[i % SERVICE_BADGES.length];
+      var suffix = SERVICE_SUFFIXES[i % SERVICE_SUFFIXES.length];
+      var fakeTitle = badge + " Service " + suffix;
+      var provider = r.provider.length > 30 ? r.provider.slice(0, 30) + "…" : r.provider;
+      var thumb = r.thumbnail || "https://placehold.co/400x148/e3f2fd/1a73e8?text=CleanPro";
+
+      var card = document.createElement("div");
+      card.className = "result-card";
+      card.setAttribute("data-id", r.id);
+      card.innerHTML =
+        '<img src="' + thumb + '" alt="service" onerror="this.src=\'https://placehold.co/400x148/e3f2fd/1a73e8?text=CleanPro\'" />' +
+        '<div class="play-overlay"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>' +
+        '<div class="card-body">' +
+          '<span class="badge">' + badge + '</span>' +
+          '<h4>' + fakeTitle + '</h4>' +
+          '<p>Provider: ' + provider + '</p>' +
+        '</div>';
+
+      card.addEventListener("click", function() { playVideo(r, thumb); });
+      grid.appendChild(card);
+    });
+
+    document.getElementById("results-heading").textContent = 'Available Services near "' + query + '"';
+    document.getElementById("results-section").style.display = "block";
+  }
+
+  // ── YouTube IFrame Player API ──────────────────────────────────────
+  var ytPlayer = null;
+  var ytReady  = false;
+  var pendingPlay = null;   // { id, title, provider, thumb }
+
+  // Load the IFrame API script once
+  (function() {
+    var s = document.createElement("script");
+    s.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(s);
+  })();
+
+  // Called automatically by the API when ready
+  window.onYouTubeIframeAPIReady = function() {
+    ytPlayer = new YT.Player("yt-player", {
+      width: "160",
+      height: "70",
+      videoId: "",
+      playerVars: {
+        autoplay: 1,
+        controls: 1,
+        rel: 0
+      },
+      events: {
+        onReady: function() {
+          ytReady = true;
+          if (pendingPlay) {
+            ytPlayer.loadVideoById(pendingPlay.id);
+            showBar(pendingPlay);
+            pendingPlay = null;
+          }
+        },
+        onError: function(e) {
+          // 101 / 150 / 153 = embedding blocked by video owner
+          var blocked = [101, 150, 153].indexOf(e.data) !== -1;
+          showToast(blocked
+            ? "This song blocks embedding. Try another one."
+            : "Playback error (" + e.data + "). Try another song.");
+          stopPlayer();
+        }
+      }
+    });
+  };
+
+  function playVideo(r, thumb) {
+    document.querySelectorAll(".result-card").forEach(function(c) { c.classList.remove("active"); });
+    var activeCard = document.querySelector('.result-card[data-id="' + r.id + '"]');
+    if (activeCard) activeCard.classList.add("active");
+
+    var info = { id: r.id, title: r.title, provider: r.provider, thumb: thumb };
+
+    if (!ytReady) {
+      pendingPlay = info;   // play once API is ready
+    } else {
+      ytPlayer.loadVideoById(r.id);
+      showBar(info);
+    }
+  }
+
+  function showBar(info) {
+    document.getElementById("np-title").textContent    = info.title;
+    document.getElementById("np-provider").textContent = info.provider;
+    document.getElementById("np-thumb").src            = info.thumb;
+    document.getElementById("now-playing").classList.add("visible");
+  }
+
+  function stopPlayer() {
+    if (ytPlayer && ytReady) ytPlayer.stopVideo();
+    document.getElementById("now-playing").classList.remove("visible");
+    document.querySelectorAll(".result-card").forEach(function(c) { c.classList.remove("active"); });
+  }
+
+  // Toast notification
+  function showToast(msg) {
+    var t = document.getElementById("toast");
+    if (!t) {
+      t = document.createElement("div");
+      t.id = "toast";
+      t.style.cssText = "position:fixed;top:24px;left:50%;transform:translateX(-50%);"
+        + "background:#c62828;color:#fff;padding:12px 24px;border-radius:8px;"
+        + "font-size:14px;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.3);";
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function() { t.style.display = "none"; }, 4000);
+  }
+
+  document.getElementById("search-input").addEventListener("keydown", function(e) {
+    if (e.key === "Enter") doSearch();
+  });
+</script>
+
+</body>
+</html>
